@@ -1,5 +1,4 @@
 #! /usr/bin/env zsh
-## $Id: .zshrc 259 2008-11-17 15:49:11Z sigoure $
 
 #######
 # ENV #
@@ -411,9 +410,6 @@ compdef _hosts upgrade
 [ -r ~/.zshrc.local ] && source ~/.zshrc.local
 
 
-#[ -r /nix/etc/profile.d/nix.sh ] && source /nix/etc/profile.d/nix.sh
-
-
 #export JAVA_HOME="/opt/java"
 #export PATH="${JAVA_HOME}/bin:${PATH}"
 
@@ -422,7 +418,6 @@ compdef _hosts upgrade
 [ -r /export/apps/xtools/bin ] && export PATH=/export/apps/xtools/bin:$PATH
 
 export PATH=/export/apps/xtools/bin:$PATH:$HOME/bin
-
 
 
 #[ -r /usr/local/Cellar/ruby/1.9.3-p194/bin/ ] && export PATH=/usr/local/Cellar/ruby/1.9.3-p194/bin/$PATH:
