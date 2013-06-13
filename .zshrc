@@ -410,6 +410,9 @@ compdef _hosts upgrade
 [ -r ~/.zshrc.local ] && source ~/.zshrc.local
 
 
+#[ -r /nix/etc/profile.d/nix.sh ] && source /nix/etc/profile.d/nix.sh
+
+
 #export JAVA_HOME="/opt/java"
 #export PATH="${JAVA_HOME}/bin:${PATH}"
 
@@ -418,6 +421,7 @@ compdef _hosts upgrade
 [ -r /export/apps/xtools/bin ] && export PATH=/export/apps/xtools/bin:$PATH
 
 export PATH=/export/apps/xtools/bin:$PATH:$HOME/bin
+
 
 
 #[ -r /usr/local/Cellar/ruby/1.9.3-p194/bin/ ] && export PATH=/usr/local/Cellar/ruby/1.9.3-p194/bin/$PATH:
@@ -452,3 +456,38 @@ export PATH=$PATH:$JAVA_HOME/bin:/usr/local/bin:/usr/local/mysql/bin:/usr/local/
 export PATH=$HOME/.rbenv/bin:$PATH
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+
+todt() {
+    host="akalyan-ld"
+
+    if (( $# == 0 ))
+    then echo "Use one or more arg(s), which is the file to diff and xfer"
+    else
+        allfiles=""
+        for i;
+        do
+            [[ -n "$allfiles" ]] && allfiles="$allfiles,"
+            allfiles="$allfiles$i"
+        done
+
+        if (( $# > 1  )) then; allfiles="{$allfiles}"; fi
+
+        rsync -q -R -a -h -z --delay-updates -T /tmp -P $host:$allfiles ~/tmp/diff
+
+        for i; 
+        do 
+            echo "--------------$i------------"
+
+            echo "Comparing [~/tmp/diff/$i] with [$i]"
+            cmp -s $i ~/tmp/diff/$i;
+            if [ $? -eq 0 ]; then
+                echo 'No diff!'
+            else
+                diff -urN ~/tmp/diff/$i $i;
+                read sendfile\?"Send [$i] over? Answer y/[n]: "
+                [[ $sendfile == "y" ]] && rsync -a -h -z --delay-updates -T /tmp --progress -P $i akalyan-ld:$i
+            fi
+        done
+    fi
+}
